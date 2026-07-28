@@ -1,0 +1,7 @@
+- Integrate venv
+- delete double .gitignore
+- better backgound in hero page
+- durchlaufender text mit "mit musik können menchen nicht unsympathisch sein"
+- moderneres und minimalistischeres design
+- mehr rot akkzente
+- mehr spielereien
