@@ -30,7 +30,8 @@ Theme: **Manifesto** (from the Hallmark design skill), adapted to the brand red.
 
 ## 3D Model
 
-- Hero focal point: "Kleinstadt auf der Schallplatte" (`src/components/3d/RecordTown.tsx`)
+- Hero focal point: the Kleinstadtsound character (`src/components/3d/Figure.tsx`), a chrome figure with the logo on its head, dancing on "Kleinstadt auf der Schallplatte" (`src/components/3d/RecordTown.tsx`)
+- The figure bounces to the beat, swings its arms, turns its head toward the pointer and its body with the scroll
 - A spinning record with the red label; gabled houses ride the grooves, the twin towers of the Eichstätt cathedral stand on the label, a tonearm on the edge
 - Houses bounce like an equalizer at 124 BPM
 - Scrolling scratches the record, the mouse tilts the deck; static with reduced motion

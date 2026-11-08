@@ -2,7 +2,9 @@
 
 import { useState, useSyncExternalStore } from 'react'
 import { Canvas } from '@react-three/fiber'
+import { Environment, Lightformer } from '@react-three/drei'
 import RecordTown from './RecordTown'
+import Figure from './Figure'
 
 function readToken(name: string, fallback: string) {
   if (typeof window === 'undefined') return fallback
@@ -30,20 +32,32 @@ export default function Scene() {
     red: readToken('--color-scene-red', 'red'),
     vinyl: readToken('--color-scene-vinyl', 'black'),
     groove: readToken('--color-scene-groove', 'gray'),
+    font: readToken('--font-display', 'Impact, sans-serif'),
   }))
 
   return (
     <Canvas
-      camera={{ position: [0, 2.4, 5.6], fov: 42 }}
+      camera={{ position: [0, 2.7, 7.6], fov: 42 }}
       frameloop={still ? 'demand' : 'always'}
       dpr={[1, 2]}
-      onCreated={({ camera }) => camera.lookAt(0, 0.1, 0)}
+      onCreated={({ camera }) => camera.lookAt(0, 1.35, 0)}
     >
-      <ambientLight intensity={0.35} />
+      <ambientLight intensity={0.3} />
       <directionalLight position={[2, 6, 4]} intensity={1.6} color={colors.ink} />
       <pointLight position={[-4, 1.5, 2]} intensity={14} color={colors.red} />
       <pointLight position={[3.5, 0.5, -3]} intensity={8} color={colors.red} />
-      <RecordTown colors={colors} still={still} />
+
+      {/* Studio light for the chrome, built locally: no environment files are fetched. */}
+      <Environment resolution={256}>
+        <Lightformer form="rect" intensity={5} color={colors.ink} position={[0, 5, 3]} scale={[10, 3, 1]} />
+        <Lightformer form="rect" intensity={3} color={colors.ink} position={[0, 1, 6]} scale={[6, 1.5, 1]} />
+        <Lightformer form="rect" intensity={2} color={colors.ink} position={[-5, 1, 3]} rotation-y={Math.PI / 2} scale={[6, 1.2, 1]} />
+        <Lightformer form="rect" intensity={4} color={colors.red} position={[5, 0.5, 1]} rotation-y={-Math.PI / 2} scale={[6, 3, 1]} />
+        <Lightformer form="ring" intensity={2} color={colors.red} position={[0, 1, -6]} scale={4} />
+      </Environment>
+
+      <RecordTown colors={colors} still={still} towers={false} />
+      <Figure ink={colors.ink} red={colors.red} font={colors.font} still={still} />
     </Canvas>
   )
 }

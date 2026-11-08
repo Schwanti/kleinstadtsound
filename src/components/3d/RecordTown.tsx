@@ -14,6 +14,8 @@ export type SceneColors = {
 type RecordTownProps = {
   colors: SceneColors
   still?: boolean
+  towers?: boolean
+  children?: React.ReactNode
 }
 
 const RECORD_RADIUS = 2
@@ -135,7 +137,7 @@ function Tonearm({ color }: { color: string }) {
 
 // Kleinstadt on a record: a ring of gabled houses riding the grooves,
 // the twin cathedral towers on the label, bouncing to the beat.
-export default function RecordTown({ colors, still = false }: RecordTownProps) {
+export default function RecordTown({ colors, still = false, towers = true, children }: RecordTownProps) {
   const deck = useRef<THREE.Group>(null)
   const platter = useRef<THREE.Group>(null)
   const houseRefs = useRef<(THREE.Group | null)[]>([])
@@ -184,7 +186,7 @@ export default function RecordTown({ colors, still = false }: RecordTownProps) {
         </mesh>
 
         {/* The cathedral's twin towers on the label, the spindle between them. */}
-        {[-0.2, 0.2].map((x) => (
+        {towers && [-0.2, 0.2].map((x) => (
           <group key={x} position={[x, RECORD_HEIGHT / 2, 0.05]}>
             <mesh position={[0, 0.45, 0]}>
               <boxGeometry args={[0.2, 0.9, 0.2]} />
@@ -196,13 +198,17 @@ export default function RecordTown({ colors, still = false }: RecordTownProps) {
             </mesh>
           </group>
         ))}
-        <mesh position={[0, RECORD_HEIGHT / 2 + 0.25, -0.12]}>
-          <boxGeometry args={[0.24, 0.5, 0.28]} />
-          <meshStandardMaterial color={colors.ink} roughness={0.55} />
-        </mesh>
-        <mesh position={[0, RECORD_HEIGHT / 2 + 0.5, -0.12]} rotation={[0, Math.PI / 2, 0]} scale={[0.28, 0.4, 0.24]} geometry={roof}>
-          <meshStandardMaterial color={colors.ink} roughness={0.55} />
-        </mesh>
+        {towers && (
+          <>
+            <mesh position={[0, RECORD_HEIGHT / 2 + 0.25, -0.12]}>
+              <boxGeometry args={[0.24, 0.5, 0.28]} />
+              <meshStandardMaterial color={colors.ink} roughness={0.55} />
+            </mesh>
+            <mesh position={[0, RECORD_HEIGHT / 2 + 0.5, -0.12]} rotation={[0, Math.PI / 2, 0]} scale={[0.28, 0.4, 0.24]} geometry={roof}>
+              <meshStandardMaterial color={colors.ink} roughness={0.55} />
+            </mesh>
+          </>
+        )}
 
         {town.map((h, i) => (
           <group
@@ -224,6 +230,7 @@ export default function RecordTown({ colors, still = false }: RecordTownProps) {
       </group>
 
       <Tonearm color={colors.ink} />
+      {children}
     </group>
   )
 }
