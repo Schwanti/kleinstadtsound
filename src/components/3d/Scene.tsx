@@ -7,7 +7,8 @@ import { Environment, Lightformer } from '@react-three/drei'
 import RecordTown from './RecordTown'
 import Figure from './Figure'
 import Archaeopteryx from './Archaeopteryx'
-import { CameraRig, CAMERA_HOME, CAMERA_TARGET } from './CameraRig'
+const CAMERA_HOME = new THREE.Vector3(0, 2.7, 7.6)
+const CAMERA_TARGET = new THREE.Vector3(0, 1.35, 0)
 import { sceneState } from './sceneState'
 
 const BPM = 124
@@ -94,7 +95,6 @@ export default function Scene() {
       <RecordTown colors={colors} still={still} />
       <Archaeopteryx color={colors.feather} teeth={colors.fossil} still={still} />
       {!still && <Strobe />}
-      <CameraRig still={still} />
       <Figure ink={colors.ink} collar={colors.vinyl} font={colors.font} still={still} />
     </Canvas>
   )
