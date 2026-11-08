@@ -33,6 +33,7 @@ export default function Scene() {
     vinyl: readToken('--color-scene-vinyl', 'black'),
     groove: readToken('--color-scene-groove', 'gray'),
     font: readToken('--font-display', 'Impact, sans-serif'),
+    envGrey: readToken('--color-scene-env', 'gray'),
   }))
 
   return (
@@ -44,20 +45,23 @@ export default function Scene() {
     >
       <ambientLight intensity={0.3} />
       <directionalLight position={[2, 6, 4]} intensity={1.6} color={colors.ink} />
-      <pointLight position={[-4, 1.5, 2]} intensity={14} color={colors.red} />
-      <pointLight position={[3.5, 0.5, -3]} intensity={8} color={colors.red} />
+      <pointLight position={[-4, 1.5, 2]} intensity={6} color={colors.red} />
+      <pointLight position={[3.5, 0.5, -3]} intensity={5} color={colors.red} />
 
       {/* Studio light for the chrome, built locally: no environment files are fetched. */}
       <Environment resolution={256}>
+        <color attach="background" args={[colors.envGrey]} />
         <Lightformer form="rect" intensity={5} color={colors.ink} position={[0, 5, 3]} scale={[10, 3, 1]} />
         <Lightformer form="rect" intensity={3} color={colors.ink} position={[0, 1, 6]} scale={[6, 1.5, 1]} />
         <Lightformer form="rect" intensity={2} color={colors.ink} position={[-5, 1, 3]} rotation-y={Math.PI / 2} scale={[6, 1.2, 1]} />
-        <Lightformer form="rect" intensity={4} color={colors.red} position={[5, 0.5, 1]} rotation-y={-Math.PI / 2} scale={[6, 3, 1]} />
+        <Lightformer form="rect" intensity={2.5} color={colors.ink} position={[0, -3, 2]} rotation-x={-Math.PI / 2} scale={[8, 2, 1]} />
+        <Lightformer form="circle" intensity={6} color={colors.ink} position={[-2, 3, 4]} scale={1.2} />
+        <Lightformer form="rect" intensity={2} color={colors.red} position={[5, 0.5, 1]} rotation-y={-Math.PI / 2} scale={[6, 3, 1]} />
         <Lightformer form="ring" intensity={2} color={colors.red} position={[0, 1, -6]} scale={4} />
       </Environment>
 
       <RecordTown colors={colors} still={still} towers={false} />
-      <Figure ink={colors.ink} red={colors.red} font={colors.font} still={still} />
+      <Figure ink={colors.ink} collar={colors.vinyl} font={colors.font} still={still} />
     </Canvas>
   )
 }
