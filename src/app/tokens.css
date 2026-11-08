@@ -15,6 +15,8 @@
   --color-focus: #ff001a;
   --color-scene-ink: #f3ede2;
   --color-scene-red: #ff001a;
+  --color-scene-vinyl: #1c1714;
+  --color-scene-groove: #4a413b;
 
   --font-display: var(--font-anton), "Impact", "Arial Narrow", sans-serif;
   --font-body: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
