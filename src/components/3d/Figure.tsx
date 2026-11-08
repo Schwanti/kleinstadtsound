@@ -78,17 +78,17 @@ const HEAD_Y = 2.89
 const HEAD_R = 0.42
 const TORSO: Limb = { points: [[0, 2.55, 0], [0, 2.32, 0.02], [-0.02, 1.95, 0.02], [-0.04, 1.62, 0]], from: 0.27, to: 0.22 }
 const ARMS: (Limb & { phase: number })[] = [
-  { points: [[-0.1, 2.36, 0], [-0.5, 2.2, 0.05], [-0.9, 1.94, 0.1], [-1.3, 1.6, 0.15]], from: 0.2, to: 0.004, phase: 0 },
-  { points: [[0.12, 2.38, 0], [0.55, 2.22, 0.05], [1.0, 1.88, 0.1], [1.38, 1.42, 0.15]], from: 0.2, to: 0.004, phase: Math.PI },
+  { points: [[-0.02, 2.4, 0], [-0.5, 2.2, 0.05], [-0.9, 1.94, 0.1], [-1.3, 1.6, 0.15]], from: 0.21, to: 0.004, phase: 0 },
+  { points: [[0.02, 2.42, 0], [0.55, 2.22, 0.05], [1.0, 1.88, 0.1], [1.38, 1.42, 0.15]], from: 0.21, to: 0.004, phase: Math.PI },
 ]
 // The left leg rooted high on the hip, the right from the crotch.
 const LEGS: Limb[] = [
   { points: [[-0.16, 1.98, 0], [-0.48, 1.45, 0.03], [-0.72, 0.75, 0.06], [-0.98, 0.08, 0.1]], from: 0.21, to: 0.1 },
   { points: [[0.0, 1.66, 0], [0.2, 1.1, 0.03], [0.36, 0.55, 0.05], [0.5, 0.08, 0.08]], from: 0.21, to: 0.1 },
 ]
-const ARM_SWING = 0.14
+const ARM_SWING = 0.06
 // How much of each arm melts into the liquid shoulders.
-const ARM_ROOT = 0.32
+const ARM_ROOT = 0.2
 
 // The liquid body (torso, shoulders, legs) is one metaball surface, built once.
 const CENTER = new THREE.Vector3(0, 1.45, 0.05)
@@ -154,7 +154,7 @@ function buildLiquid(material: THREE.Material, resolution: number) {
   mc.reset()
   chain(TORSO)
   LEGS.forEach((leg) => chain(leg))
-  ARMS.forEach((arm) => chain(arm, ARM_ROOT, 1.12))
+  ARMS.forEach((arm) => chain(arm, ARM_ROOT, 1.04))
   mc.update()
   return mc
 }
@@ -176,7 +176,15 @@ export default function Figure({ ink, collar, font, still = false }: FigureProps
   }, [chrome])
   useEffect(() => () => liquid.geometry.dispose(), [liquid])
 
-  const arms = useMemo(() => ARMS.map((arm) => ({ geo: taperedTube(arm), root: arm.points[0] })), [])
+  // Each arm pivots where it leaves the torso, so the joint stays closed while it swings.
+  const arms = useMemo(
+    () =>
+      ARMS.map((arm) => {
+        const p = curveOf(arm).getPointAt(ARM_ROOT * 0.6)
+        return { geo: taperedTube(arm), root: [p.x, p.y, p.z] as Point }
+      }),
+    [],
+  )
 
   useFrame((state, delta) => {
     if (still || !body.current || !head.current) return
