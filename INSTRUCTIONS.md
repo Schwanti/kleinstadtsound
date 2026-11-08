@@ -20,10 +20,13 @@ instagram: https://www.instagram.com/kle1nstadtsound/
 
 ## Design
 
-- Dark theme (black background, white text)
-- Primary accent: `#FF001A` (bright red)
-- Secondary accent: `#6C0009` (dark red, hover states, subtle backgrounds)
-- Modern sans-serif font (Inter or Space Grotesk)
+Theme: **Manifesto** (from the Hallmark design skill), adapted to the brand red. Tokens live in `src/app/tokens.css`.
+
+- Warm near-black sheet, warm off-white ink (no pure black/white)
+- Primary accent: `#FF001A` (bright red), spent sparingly: the red word in the hero, the marquee band, buttons, focus rings
+- Secondary accent: `#6C0009` (dark red, hover states)
+- Display: Anton, uppercase, poster size; body: Public Sans
+- Square edges, hairline rules, no shadows, no rounded cards
 
 ## 3D Model
 

@@ -1,0 +1,59 @@
+/* Hallmark tokens · theme: Manifesto, brand red kept (#FF001A, #6C0009) */
+:root {
+  --color-paper: oklch(13% 0.01 60);
+  --color-paper-2: oklch(17% 0.011 60);
+  --color-paper-3: oklch(22% 0.012 60);
+  --color-ink: oklch(95% 0.014 85);
+  --color-ink-2: oklch(84% 0.012 80);
+  --color-muted: oklch(66% 0.016 65);
+  --color-rule: oklch(31% 0.014 60);
+  --color-accent: #ff001a;
+  --color-accent-strong: oklch(53% 0.215 27);
+  --color-accent-deep: #6c0009;
+  --color-accent-text: #ff001a;
+  --color-accent-ink: oklch(98.5% 0.004 90);
+  --color-focus: #ff001a;
+  --color-scene-ink: #f3ede2;
+  --color-scene-red: #ff001a;
+
+  --font-display: var(--font-anton), "Impact", "Arial Narrow", sans-serif;
+  --font-body: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-outlier: var(--font-body);
+
+  --radius-card: 0;
+  --radius-pill: 0;
+  --rule-hair: 1px;
+  --rule-bar: 4px;
+  --shadow-card: none;
+  --tracking-display: 0.004em;
+  --display-weight: 400;
+  --lh-tight: 0.88;
+
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lead: clamp(1.125rem, 1rem + 0.4vw, 1.3125rem);
+  --text-title: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
+  --text-section: clamp(3rem, 1.6rem + 6vw, 7rem);
+  --text-display: clamp(4.5rem, 12vw, 13rem);
+
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2.5rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+  --space-4xl: 9rem;
+
+  --gutter: clamp(1rem, 0.4rem + 2.5vw, 2.5rem);
+  --container: 80rem;
+  --nav-h: 4rem;
+
+  --dur-short: 160ms;
+  --dur-mid: 320ms;
+  --dur-long: 900ms;
+  --dur-marquee: 38s;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-linear: linear;
+}
