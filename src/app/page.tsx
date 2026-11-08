@@ -34,7 +34,12 @@ export default async function Home() {
           </p>
           <div className="footer__row">
             <p className="label">
-              © 2024 Kleinstadtsound. Aus Eichstätt, <span className="pixel">48°53′ N 11°11′ O</span>
+              © 2024 Kleinstadtsound. Aus Eichstätt,{' '}
+              {/* Easter egg: hover or focus turns the coordinates into the T-shirt print. */}
+              <span className="coords pixel" tabIndex={0}>
+                <span>48°53′ N 11°11′ O</span>
+                <span aria-hidden="true">I ♥ Altmühltal</span>
+              </span>
             </p>
             <ul className="footer__links">
               <li>

@@ -697,6 +697,64 @@ img {
   transform: translateY(0);
 }
 
+.coords {
+  display: inline-grid;
+  overflow: clip;
+  vertical-align: bottom;
+  color: var(--color-ink-2);
+}
+
+.coords > span {
+  grid-area: 1 / 1;
+  transition: transform var(--dur-mid) var(--ease-out);
+}
+
+.coords > span:last-child {
+  color: var(--color-accent-text);
+  transform: translateY(100%);
+}
+
+.coords:hover > span:first-child,
+.coords:focus-visible > span:first-child {
+  transform: translateY(-100%);
+}
+
+.coords:hover > span:last-child,
+.coords:focus-visible > span:last-child {
+  transform: translateY(0);
+}
+
+/* Gaffer tape over the passage: each word its own torn strip, stuck on askew. */
+.tape-banner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2xs) var(--space-xs);
+  margin: 0 auto var(--space-2xl);
+  padding-inline: var(--gutter);
+}
+
+.tape-banner span {
+  display: inline-block;
+  padding: var(--space-2xs) var(--space-md) var(--space-xs);
+  background:
+    repeating-linear-gradient(45deg, var(--color-tape-dark) 0 1px, transparent 1px 5px),
+    repeating-linear-gradient(-45deg, var(--color-tape-dark) 0 1px, transparent 1px 5px),
+    var(--color-tape);
+  color: var(--color-tape-ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  line-height: 1;
+  text-transform: uppercase;
+  clip-path: polygon(0 4%, 3% 0, 6% 6%, 9% 1%, 12% 5%, 88% 2%, 91% 7%, 94% 0, 97% 5%, 100% 1%, 100% 96%, 97% 100%, 94% 94%, 91% 99%, 88% 95%, 12% 98%, 9% 93%, 6% 100%, 3% 95%, 0 99%);
+}
+
+.tape-banner span:nth-child(1) { transform: rotate(-3deg) translateY(4px); }
+.tape-banner span:nth-child(2) { transform: rotate(1.5deg); }
+.tape-banner span:nth-child(3) { transform: rotate(-1deg) translateY(-3px); }
+.tape-banner span:nth-child(4) { transform: rotate(4deg) translateY(2px); }
+.tape-banner span:nth-child(5) { transform: rotate(-2deg) translateY(5px); }
+
 .toast {
   position: fixed;
   left: 50%;
@@ -852,6 +910,7 @@ img {
   }
 
   .nav__swap > span,
+  .coords > span,
   .toast {
     transition: none;
   }

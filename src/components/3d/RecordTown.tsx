@@ -4,6 +4,7 @@ import { useMemo, useRef } from 'react'
 import { useFrame, type ThreeEvent } from '@react-three/fiber'
 import * as THREE from 'three'
 import { sceneState } from './sceneState'
+import { showToast } from '@/components/ui/toast'
 
 export type SceneColors = {
   ink: string
@@ -22,6 +23,10 @@ export type SceneColors = {
   river: string
   neon: string
   fossil: string
+  feather: string
+  bone: string
+  tape: string
+  tapeDark: string
   font: string
 }
 
@@ -229,6 +234,69 @@ function drawLabel(red: string, font: string) {
   return canvasTexture(c)
 }
 
+// The famous slab: an Archaeopteryx skeleton in Solnhofen limestone, head thrown back,
+// wings spread with their feather prints, the long tail feathered on both sides.
+function drawFossil(stone: string, bone: string) {
+  const w = 320
+  const h = 240
+  const c = document.createElement('canvas')
+  c.width = w
+  c.height = h
+  const ctx = c.getContext('2d')
+  if (ctx) {
+    ctx.fillStyle = stone
+    ctx.fillRect(0, 0, w, h)
+    // limestone grain
+    for (let i = 0; i < 900; i++) {
+      ctx.fillStyle = `rgba(0,0,0,${rand(i) * 0.06})`
+      ctx.fillRect(rand(i + 1) * w, rand(i + 2) * h, 2, 2)
+    }
+    ctx.strokeStyle = bone
+    ctx.fillStyle = bone
+    ctx.lineCap = 'round'
+    const line = (pts: number[][], width: number) => {
+      ctx.lineWidth = width
+      ctx.beginPath()
+      ctx.moveTo(pts[0][0], pts[0][1])
+      for (const [x, y] of pts.slice(1)) ctx.lineTo(x, y)
+      ctx.stroke()
+    }
+    // feather prints of both wings, fanned
+    ctx.globalAlpha = 0.45
+    for (let i = 0; i < 11; i++) {
+      line([[150, 110], [40 + i * 6, 40 + i * 9]], 2)
+      line([[170, 105], [250 + i * 5, 30 + i * 8]], 2)
+    }
+    ctx.globalAlpha = 1
+    // spine, curved neck thrown back, skull with snout
+    line([[200, 150], [170, 120], [150, 100], [140, 75], [150, 55], [168, 50]], 4)
+    ctx.beginPath()
+    ctx.ellipse(176, 48, 12, 8, -0.3, 0, Math.PI * 2)
+    ctx.fill()
+    line([[184, 46], [204, 52]], 3)
+    // arm bones and clawed fingers
+    line([[150, 100], [105, 80], [70, 60]], 3)
+    line([[165, 98], [210, 72], [250, 52]], 3)
+    for (const [x, y, dx] of [[70, 60, -1], [250, 52, 1]]) {
+      for (let k = 0; k < 3; k++) line([[x, y], [x + dx * (10 + k * 4), y - 8 + k * 6]], 2)
+    }
+    // ribs, pelvis, legs
+    for (let k = 0; k < 5; k++) line([[160 + k * 7, 112 + k * 6], [150 + k * 7, 128 + k * 6]], 2)
+    line([[200, 150], [185, 185], [200, 210], [188, 225]], 3)
+    line([[205, 152], [225, 180], [215, 205], [228, 220]], 3)
+    // the long tail with its feather pairs
+    const tail = [[200, 150], [230, 160], [258, 168], [284, 174], [308, 178]]
+    line(tail, 3)
+    ctx.globalAlpha = 0.5
+    for (const [x, y] of tail.slice(1)) {
+      line([[x, y], [x + 8, y - 16]], 2)
+      line([[x, y], [x + 8, y + 16]], 2)
+    }
+    ctx.globalAlpha = 1
+  }
+  return canvasTexture(c)
+}
+
 // A neon sign: the glyphs are the only lit pixels.
 function drawSign(text: string, font: string) {
   const c = document.createElement('canvas')
@@ -269,7 +337,16 @@ function Grooves({ color, river }: { color: string; river: string }) {
         </lineLoop>
       ))}
       {/* the Altmühl, running in the groove between the two rings of houses */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.002, 0]}>
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, 0.002, 0]}
+        onClick={(e) => {
+          e.stopPropagation()
+          showToast('I ♥ Altmühltal')
+        }}
+        onPointerOver={() => (document.body.style.cursor = 'pointer')}
+        onPointerOut={() => (document.body.style.cursor = '')}
+      >
         <ringGeometry args={[RIVER - 0.035, RIVER + 0.035, 160]} />
         <meshStandardMaterial color={river} emissive={river} emissiveIntensity={0.35} roughness={0.2} metalness={0.3} />
       </mesh>
@@ -341,6 +418,7 @@ function Burg({
       <mesh position={[0, 0.35, 0]} scale={[0.64, 0.12, 0.17]} geometry={ROOFS.steep}>
         <meshStandardMaterial color={colors.roof} roughness={0.65} />
       </mesh>
+      <Fossil colors={colors} />
       {[-0.34, 0.34].map((x) => (
         <group key={x} position={[x, 0.18, 0]}>
           <mesh position={[0, 0.17, 0]}>
@@ -358,6 +436,17 @@ function Burg({
         </group>
       ))}
     </group>
+  )
+}
+
+// Easter egg: the Archaeopteryx slab, leaning against the castle hill (the Jura-Museum is up there).
+function Fossil({ colors }: { colors: SceneColors }) {
+  const texture = useMemo(() => drawFossil(colors.fossil, colors.bone), [colors.fossil, colors.bone])
+  return (
+    <mesh position={[0.12, 0.12, 0.33]} rotation={[-0.9, 0, 0]}>
+      <boxGeometry args={[0.3, 0.22, 0.02]} />
+      <meshStandardMaterial map={texture} roughness={0.9} />
+    </mesh>
   )
 }
 

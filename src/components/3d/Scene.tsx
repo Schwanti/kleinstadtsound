@@ -7,6 +7,7 @@ import { Environment, Lightformer } from '@react-three/drei'
 import RecordTown from './RecordTown'
 import Figure from './Figure'
 import Archaeopteryx from './Archaeopteryx'
+import MakeAMove, { CameraRig, CAMERA_HOME, CAMERA_TARGET } from './MakeAMove'
 import { sceneState } from './sceneState'
 
 const BPM = 124
@@ -62,14 +63,19 @@ export default function Scene() {
     river: readToken('--color-scene-river', 'blue'),
     neon: readToken('--color-scene-neon', 'red'),
     fossil: readToken('--color-scene-fossil', 'beige'),
+    feather: readToken('--color-scene-feather', 'tan'),
+    bone: readToken('--color-scene-bone', 'brown'),
+    tape: readToken('--color-tape', 'silver'),
+    tapeDark: readToken('--color-tape-dark', 'gray'),
+    tapeInk: readToken('--color-tape-ink', 'black'),
   }))
 
   return (
     <Canvas
-      camera={{ position: [0, 2.7, 7.6], fov: 42 }}
+      camera={{ position: CAMERA_HOME.toArray(), fov: 42 }}
       frameloop={still ? 'demand' : 'always'}
       dpr={[1, 2]}
-      onCreated={({ camera }) => camera.lookAt(0, 1.35, 0)}
+      onCreated={({ camera }) => camera.lookAt(CAMERA_TARGET)}
     >
       <ambientLight intensity={0.3} />
       <directionalLight position={[2, 6, 4]} intensity={1.6} color={colors.ink} />
@@ -89,8 +95,10 @@ export default function Scene() {
       </Environment>
 
       <RecordTown colors={colors} still={still} />
-      <Archaeopteryx color={colors.fossil} still={still} />
+      <Archaeopteryx color={colors.feather} teeth={colors.fossil} still={still} />
       {!still && <Strobe />}
+      <CameraRig still={still} />
+      <MakeAMove font={colors.font} tape={colors.tape} edge={colors.tapeDark} outline={colors.tapeInk} still={still} />
       <Figure ink={colors.ink} collar={colors.vinyl} font={colors.font} still={still} />
     </Canvas>
   )
