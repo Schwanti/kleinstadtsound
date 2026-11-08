@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { MarchingCubes } from 'three-stdlib'
+import { sceneState } from './sceneState'
 
 type FigureProps = {
   ink: string
@@ -87,6 +88,8 @@ const LEGS: Limb[] = [
   { points: [[0.0, 1.66, 0], [0.2, 1.1, 0.03], [0.36, 0.55, 0.05], [0.5, 0.08, 0.08]], from: 0.21, to: 0.1 },
 ]
 const ARM_SWING = 0.06
+const JUMP_TIME = 0.9
+const JUMP_REQUESTED = -2
 // How much of each arm melts into the liquid shoulders.
 const ARM_ROOT = 0.2
 
@@ -163,6 +166,8 @@ export default function Figure({ ink, collar, font, still = false }: FigureProps
   const body = useRef<THREE.Group>(null)
   const head = useRef<THREE.Group>(null)
   const armRefs = useRef<(THREE.Group | null)[]>([])
+  const base = useRef(0)
+  const spin = useRef(0)
   const face = useFaceTexture(font)
 
   const chrome = useMemo(
@@ -189,19 +194,35 @@ export default function Figure({ ink, collar, font, still = false }: FigureProps
   useFrame((state, delta) => {
     if (still || !body.current || !head.current) return
     const dt = Math.min(delta, 0.05)
-    const beat = (state.clock.elapsedTime * BPM) / 60
-    const kick = Math.pow(1 - (beat % 1), 3)
-    const sway = Math.sin(beat * Math.PI)
+    const t = state.clock.elapsedTime
+    const beat = (t * BPM) / 60
+    // With the needle lifted the music stops, and so does the dancing.
+    const groove = sceneState.playing ? 1 : 0
+    const kick = Math.pow(1 - (beat % 1), 3) * groove
+    const sway = Math.sin(beat * Math.PI) * groove
 
-    // Bounce on the kick, sway on the bar, turn with the scroll.
-    body.current.position.y = kick * 0.08
+    // Easter egg: a click on the head makes it jump and turn once.
+    if (sceneState.jumpAt === JUMP_REQUESTED) sceneState.jumpAt = t
+    const sinceJump = t - sceneState.jumpAt
+    const jumping = sceneState.jumpAt >= 0 && sinceJump < JUMP_TIME
+    const j = jumping ? sinceJump / JUMP_TIME : 0
+    const hop = jumping ? Math.sin(j * Math.PI) * 0.7 : 0
+    const twirl = jumping ? THREE.MathUtils.smootherstep(j, 0, 1) * Math.PI * 2 : 0
+
+    // Bounce on the kick, sway on the bar, turn with the scroll; party mode spins.
+    body.current.position.y = kick * 0.08 + hop
     body.current.rotation.z = sway * 0.04
     const scrollTurn = window.scrollY * 0.003
-    body.current.rotation.y = THREE.MathUtils.damp(body.current.rotation.y, state.pointer.x * 0.35 + Math.sin(scrollTurn) * 0.6, 3, dt)
+    spin.current = sceneState.party ? spin.current + dt * 3 : THREE.MathUtils.damp(spin.current, 0, 2, dt)
+    body.current.rotation.y =
+      THREE.MathUtils.damp(base.current, state.pointer.x * 0.35 + Math.sin(scrollTurn) * 0.6, 3, dt) + twirl + spin.current
+    base.current = body.current.rotation.y - twirl - spin.current
 
-    // Arms swing from the shoulder, in opposite phase.
+    // Arms swing from the shoulder, in opposite phase; up high while jumping.
     armRefs.current.forEach((g, i) => {
-      if (g) g.rotation.z = Math.sin(beat * Math.PI + ARMS[i].phase) * ARM_SWING
+      if (!g) return
+      const lift = jumping ? Math.sin(j * Math.PI) * 0.5 * (i === 0 ? -1 : 1) : 0
+      g.rotation.z = Math.sin(beat * Math.PI + ARMS[i].phase) * ARM_SWING * groove + lift
     })
 
     // The head follows the pointer.
@@ -241,7 +262,16 @@ export default function Figure({ ink, collar, font, still = false }: FigureProps
         <meshStandardMaterial color={collar} metalness={0.5} roughness={0.4} />
       </mesh>
 
-      <group ref={head} position={[0, HEAD_Y, 0]}>
+      <group
+        ref={head}
+        position={[0, HEAD_Y, 0]}
+        onClick={(e) => {
+          e.stopPropagation()
+          sceneState.jumpAt = JUMP_REQUESTED
+        }}
+        onPointerOver={() => (document.body.style.cursor = 'pointer')}
+        onPointerOut={() => (document.body.style.cursor = '')}
+      >
         <mesh material={chrome}>
           <sphereGeometry args={[HEAD_R, 64, 64]} />
         </mesh>

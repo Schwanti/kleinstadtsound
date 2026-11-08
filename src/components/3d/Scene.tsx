@@ -1,10 +1,26 @@
 'use client'
 
-import { useState, useSyncExternalStore } from 'react'
-import { Canvas } from '@react-three/fiber'
+import { useRef, useState, useSyncExternalStore } from 'react'
+import { Canvas, useFrame } from '@react-three/fiber'
+import * as THREE from 'three'
 import { Environment, Lightformer } from '@react-three/drei'
 import RecordTown from './RecordTown'
 import Figure from './Figure'
+import Archaeopteryx from './Archaeopteryx'
+import { sceneState } from './sceneState'
+
+const BPM = 124
+
+// Party mode (Konami code): a white strobe on every beat.
+function Strobe() {
+  const light = useRef<THREE.PointLight>(null)
+  useFrame((state) => {
+    if (!light.current) return
+    const beat = (state.clock.elapsedTime * BPM) / 60
+    light.current.intensity = sceneState.party && beat % 1 < 0.12 ? 60 : 0
+  })
+  return <pointLight ref={light} position={[0, 4, 3]} intensity={0} />
+}
 
 function readToken(name: string, fallback: string) {
   if (typeof window === 'undefined') return fallback
@@ -38,6 +54,14 @@ export default function Scene() {
     roof: readToken('--color-scene-roof', 'brown'),
     window: readToken('--color-scene-window', 'orange'),
     metal: readToken('--color-scene-metal', 'silver'),
+    limestone: readToken('--color-scene-limestone', 'gray'),
+    sandstone: readToken('--color-scene-sandstone', 'beige'),
+    copper: readToken('--color-scene-copper', 'teal'),
+    gold: readToken('--color-scene-gold', 'gold'),
+    hill: readToken('--color-scene-hill', 'darkgreen'),
+    river: readToken('--color-scene-river', 'blue'),
+    neon: readToken('--color-scene-neon', 'red'),
+    fossil: readToken('--color-scene-fossil', 'beige'),
   }))
 
   return (
@@ -64,7 +88,9 @@ export default function Scene() {
         <Lightformer form="ring" intensity={2} color={colors.red} position={[0, 1, -6]} scale={4} />
       </Environment>
 
-      <RecordTown colors={colors} still={still} towers={false} />
+      <RecordTown colors={colors} still={still} />
+      <Archaeopteryx color={colors.fossil} still={still} />
+      {!still && <Strobe />}
       <Figure ink={colors.ink} collar={colors.vinyl} font={colors.font} still={still} />
     </Canvas>
   )

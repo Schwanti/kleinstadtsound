@@ -4,6 +4,7 @@ import Marquee from '@/components/sections/Marquee'
 import DJs from '@/components/sections/DJs'
 import Events from '@/components/sections/Events'
 import About from '@/components/sections/About'
+import EasterEggs from '@/components/ui/EasterEggs'
 import { getCrew, getEvents } from '@/lib/content'
 
 // Re-read crew and events (Sanity, when configured) every five minutes.
@@ -32,7 +33,9 @@ export default async function Home() {
             <span>Kleinstadtsound</span>
           </p>
           <div className="footer__row">
-            <p className="label">© 2024 Kleinstadtsound</p>
+            <p className="label">
+              © 2024 Kleinstadtsound. Aus Eichstätt, <span className="pixel">48°53′ N 11°11′ O</span>
+            </p>
             <ul className="footer__links">
               <li>
                 <a
@@ -53,6 +56,7 @@ export default async function Home() {
           </div>
         </div>
       </footer>
+      <EasterEggs />
     </>
   )
 }

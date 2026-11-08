@@ -5,6 +5,7 @@
 /* Hallmark · waive 38iii · SOUND in brand red inside the hero head, as on the profile logo lockup */
 /* Hallmark · waive 64 · the pixel face is the flyers' own material (14.03, 05.04, 22.02, 09.05), used for dates, times and counts only */
 /* Hallmark · waive 55b · hero lines are each their own nowrap element sized in cqi, leaded at --lh-tight */
+/* Hallmark · answered party-hue · the Konami party mode animates filter on one decorative layer; reduced motion gets a still colour shift */
 /* Hallmark · answered gradient text · the chrome fill on the wordmark is the collective's chrome lettering, used on the hero head and nowhere else */
 @import "tailwindcss";
 @import "./tokens.css";
@@ -285,6 +286,13 @@ img {
 .hero__inner {
   display: grid;
   gap: var(--space-xl);
+  /* let clicks reach the 3D scene behind the text (tonearm, figure) */
+  pointer-events: none;
+}
+
+.hero__inner a,
+.hero__inner button {
+  pointer-events: auto;
 }
 
 .hero__head {
@@ -665,6 +673,97 @@ img {
   }
 }
 
+/* easter eggs */
+.nav__swap {
+  display: inline-grid;
+  overflow: clip;
+  vertical-align: bottom;
+}
+
+.nav__swap > span {
+  grid-area: 1 / 1;
+  transition: transform var(--dur-mid) var(--ease-out);
+}
+
+.nav__swap > span:last-child {
+  transform: translateY(100%);
+}
+
+.nav__mark:hover .nav__swap > span:first-child {
+  transform: translateY(-100%);
+}
+
+.nav__mark:hover .nav__swap > span:last-child {
+  transform: translateY(0);
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: var(--space-lg);
+  z-index: 60;
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
+  font-size: var(--text-sm);
+  transform: translate(-50%, 200%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform var(--dur-mid) var(--ease-out), opacity var(--dur-mid) var(--ease-out);
+}
+
+.toast[data-visible="true"] {
+  transform: translate(-50%, 0);
+  opacity: 1;
+}
+
+:root[data-party="true"] .hero__wall {
+  animation: party-hue 2.4s var(--ease-linear) infinite;
+}
+
+:root[data-party="true"] .marquee__track {
+  animation-duration: 6s;
+}
+
+@keyframes party-hue {
+  from {
+    filter: hue-rotate(0deg) saturate(1.6);
+  }
+  to {
+    filter: hue-rotate(360deg) saturate(1.6);
+  }
+}
+
+.lost {
+  min-height: 100svh;
+  display: grid;
+  align-items: center;
+  background: var(--color-slogan-bg);
+}
+
+.lost__inner {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-lg);
+}
+
+.lost__code {
+  font-size: clamp(4rem, 2rem + 10vw, 10rem);
+  line-height: 1;
+  color: var(--color-accent);
+}
+
+.lost__head {
+  font-size: var(--text-section);
+  max-width: 14ch;
+}
+
+.lost__text {
+  font-size: var(--text-lead);
+  color: var(--color-ink-2);
+  max-width: 40ch;
+}
+
 /* footer: mast */
 .footer {
   padding-block: var(--space-3xl) var(--space-xl);
@@ -745,5 +844,15 @@ img {
   .index__row:hover .index__name,
   .card:hover .card__flyer img {
     transform: none;
+  }
+
+  :root[data-party="true"] .hero__wall {
+    animation: none;
+    filter: hue-rotate(160deg) saturate(1.6);
+  }
+
+  .nav__swap > span,
+  .toast {
+    transition: none;
   }
 }

@@ -45,6 +45,14 @@
   --color-scene-roof: #8e2a1c;
   --color-scene-window: #ffc766;
   --color-scene-metal: #b9bec6;
+  --color-scene-limestone: #bdb6a8;
+  --color-scene-sandstone: #dccfb4;
+  --color-scene-copper: #5f8a7a;
+  --color-scene-gold: #d8a93a;
+  --color-scene-hill: #34402f;
+  --color-scene-river: #3f86c2;
+  --color-scene-neon: #ff2b3f;
+  --color-scene-fossil: #d9ccb0;
 
   --font-display: var(--font-anton), "Impact", "Arial Narrow", sans-serif;
   --font-body: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;

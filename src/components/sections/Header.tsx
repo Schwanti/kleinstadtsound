@@ -18,8 +18,12 @@ export default function Header() {
   return (
     <header className="nav" data-scrolled={isScrolled}>
       <nav className="wrap nav__inner" aria-label="Hauptnavigation">
-        <a href="#home" className="nav__mark">
-          Kleinstadtsound
+        {/* Easter egg: on hover the I turns into the 1 of the Instagram handle. */}
+        <a href="#home" className="nav__mark" aria-label="Kleinstadtsound">
+          <span className="nav__swap" aria-hidden="true">
+            <span>Kleinstadtsound</span>
+            <span>Kle1nstadtsound</span>
+          </span>
         </a>
 
         <ul className="nav__links">
