@@ -34,6 +34,10 @@ export default function Scene() {
     groove: readToken('--color-scene-groove', 'gray'),
     font: readToken('--font-display', 'Impact, sans-serif'),
     envGrey: readToken('--color-scene-env', 'gray'),
+    facades: [1, 2, 3, 4].map((n) => readToken(`--color-scene-facade-${n}`, 'white')),
+    roof: readToken('--color-scene-roof', 'brown'),
+    window: readToken('--color-scene-window', 'orange'),
+    metal: readToken('--color-scene-metal', 'silver'),
   }))
 
   return (
