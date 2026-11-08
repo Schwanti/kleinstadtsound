@@ -46,7 +46,7 @@ export default defineType({
       title: 'Flyer colour',
       type: 'string',
       options: {
-        list: ['red', 'green', 'magenta', 'cyan', 'blue', 'violet', 'orange', 'chrome'],
+        list: ['red', 'green', 'magenta', 'cyan', 'blue', 'violet', 'orange', 'yellow', 'chrome'],
       },
     }),
     defineField({

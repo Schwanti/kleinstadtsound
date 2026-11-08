@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import type { CrewMember } from '@/content/crew'
 import type { ArchiveEvent } from '@/content/events'
 import { gigCount } from '@/lib/content'
@@ -14,6 +15,16 @@ export default function DJs({ crew, events }: CrewProps) {
         <h2 id="djs-title" className="section-head">
           Crew
         </h2>
+
+        <figure className="crew__photo">
+          <Image
+            src="/flyer/crew-open-air.jpg"
+            alt="Die Crew am DJ-Pult beim Open Air am Berg"
+            width={1000}
+            height={466}
+            sizes="(min-width: 80rem) 75rem, 100vw"
+          />
+        </figure>
 
         <ul className="index">
           {crew.map((dj) => {

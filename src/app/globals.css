@@ -414,6 +414,19 @@ img {
 }
 
 /* crew index */
+.crew__photo {
+  margin-bottom: var(--space-xl);
+  aspect-ratio: 1000 / 466;
+  overflow: clip;
+  background: var(--color-paper-2);
+}
+
+.crew__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .index {
   list-style: none;
   border-top: var(--rule-hair) solid var(--color-rule);
@@ -496,6 +509,7 @@ img {
 .card[data-accent="blue"] { --accent: var(--flyer-blue); }
 .card[data-accent="violet"] { --accent: var(--flyer-violet); }
 .card[data-accent="orange"] { --accent: var(--flyer-orange); }
+.card[data-accent="yellow"] { --accent: var(--flyer-yellow); }
 .card[data-accent="chrome"] { --accent: var(--flyer-chrome); }
 
 .card__flyer {

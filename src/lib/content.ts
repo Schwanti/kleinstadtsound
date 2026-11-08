@@ -5,7 +5,7 @@ import { events as localEvents, type ArchiveEvent, type FlyerAccent } from '@/co
 // otherwise from the local files in src/content/.
 const sanityConfigured = Boolean(process.env.NEXT_PUBLIC_SANITY_PROJECT_ID)
 
-const ACCENTS: FlyerAccent[] = ['red', 'green', 'magenta', 'cyan', 'blue', 'violet', 'orange', 'chrome']
+const ACCENTS: FlyerAccent[] = ['red', 'green', 'magenta', 'cyan', 'blue', 'violet', 'orange', 'yellow', 'chrome']
 
 type SanityDJ = {
   name: string
