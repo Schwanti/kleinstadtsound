@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Anton, Public_Sans } from 'next/font/google'
+import { Anton, Public_Sans, Silkscreen } from 'next/font/google'
 import './globals.css'
 
 const anton = Anton({
@@ -16,6 +16,13 @@ const publicSans = Public_Sans({
   variable: '--font-public-sans',
 })
 
+const silkscreen = Silkscreen({
+  subsets: ['latin', 'latin-ext'],
+  weight: '400',
+  display: 'swap',
+  variable: '--font-silkscreen',
+})
+
 export const metadata: Metadata = {
   title: 'Kleinstadtsound | DJ Collective',
   description:
@@ -28,7 +35,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="de" className={`${anton.variable} ${publicSans.variable}`}>
+    <html lang="de" className={`${anton.variable} ${publicSans.variable} ${silkscreen.variable}`}>
       <body>{children}</body>
     </html>
   )

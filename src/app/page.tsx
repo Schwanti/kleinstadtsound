@@ -4,8 +4,14 @@ import Marquee from '@/components/sections/Marquee'
 import DJs from '@/components/sections/DJs'
 import Events from '@/components/sections/Events'
 import About from '@/components/sections/About'
+import { getCrew, getEvents } from '@/lib/content'
 
-export default function Home() {
+// Re-read crew and events (Sanity, when configured) every five minutes.
+export const revalidate = 300
+
+export default async function Home() {
+  const [crew, events] = await Promise.all([getCrew(), getEvents()])
+
   return (
     <>
       <a className="skip" href="#djs">
@@ -15,9 +21,9 @@ export default function Home() {
       <main>
         <Hero />
         <Marquee />
-        <DJs />
-        <Events />
-        <About />
+        <DJs crew={crew} events={events} />
+        <Events events={events} />
+        <About events={events} />
       </main>
 
       <footer className="footer">

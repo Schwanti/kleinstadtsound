@@ -36,6 +36,20 @@ export default defineType({
       type: 'string',
     }),
     defineField({
+      name: 'lineup',
+      title: 'Line-up',
+      type: 'array',
+      of: [{ type: 'string' }],
+    }),
+    defineField({
+      name: 'accent',
+      title: 'Flyer colour',
+      type: 'string',
+      options: {
+        list: ['red', 'green', 'magenta', 'cyan', 'blue', 'violet', 'orange', 'chrome'],
+      },
+    }),
+    defineField({
       name: 'description',
       title: 'Description',
       type: 'text',

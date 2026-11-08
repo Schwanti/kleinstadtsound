@@ -20,7 +20,10 @@ instagram: https://www.instagram.com/kle1nstadtsound/
 
 ## Design
 
-Theme: **Manifesto** (from the Hallmark design skill), adapted to the brand red. Tokens live in `src/app/tokens.css`.
+Theme: **Chrom & Y2K**, derived from the collective's Instagram flyers (built with the Hallmark design skill). Tokens live in `src/app/tokens.css`.
+
+- Chrome wordmark, pixel type (Silkscreen) for dates and counts, the red slogan wall from the profile picture behind the hero
+- Each event card takes its flyer's own colour (`--flyer-*` tokens)
 
 - Warm near-black sheet, warm off-white ink (no pure black/white)
 - Primary accent: `#FF001A` (bright red), spent sparingly: the red word in the hero, the marquee band, buttons, focus rings
@@ -54,6 +57,14 @@ Requirements:
 - Mostly one-page website with sections
 - `/` — Hero with 3D model, featured content
 - Sections for DJs, Events, About
+
+## Editing content
+
+- **Crew:** `src/content/crew.ts` (currently B72, GWZ, KD, Soulstice, Moosi). Add or remove a line to change the crew section; `aliases` catch other spellings on flyers.
+- **Events:** `src/content/events.ts`, transcribed from the Instagram flyers. One entry per night: date, title, venue, city, line-up, info, partners, flyer image, flyer colour (`accent`).
+- **Flyers:** `public/flyer/`. The current files are cut from phone screenshots; replace each with the original artwork under the same file name.
+- **Sanity:** when `NEXT_PUBLIC_SANITY_PROJECT_ID` is set, crew ("DJ Profile") and events come from the Studio instead of these files; the page refreshes every 5 minutes.
+- "Wo wir spielen", "Mit wem" and the "x× im Line-up" counts are computed from the event list.
 
 ## Content Structure
 

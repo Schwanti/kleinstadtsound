@@ -1,27 +1,46 @@
-/* Hallmark tokens · theme: Manifesto, brand red kept (#FF001A, #6C0009) */
+/* Hallmark tokens · theme: custom "Chrom & Y2K", from the collective's flyers; brand red kept (#FF001A, #6C0009) */
 :root {
-  --color-paper: oklch(13% 0.01 60);
-  --color-paper-2: oklch(17% 0.011 60);
-  --color-paper-3: oklch(22% 0.012 60);
-  --color-ink: oklch(95% 0.014 85);
-  --color-ink-2: oklch(84% 0.012 80);
-  --color-muted: oklch(66% 0.016 65);
-  --color-rule: oklch(31% 0.014 60);
+  --color-paper: oklch(12.5% 0.006 270);
+  --color-paper-2: oklch(17% 0.008 270);
+  --color-paper-3: oklch(23% 0.01 270);
+  --color-ink: oklch(96% 0.006 250);
+  --color-ink-2: oklch(85% 0.008 250);
+  --color-muted: oklch(68% 0.012 250);
+  --color-rule: oklch(32% 0.012 270);
+
   --color-accent: #ff001a;
   --color-accent-strong: oklch(53% 0.215 27);
   --color-accent-deep: #6c0009;
-  --color-accent-text: #ff001a;
+  --color-accent-text: #ff2b3f;
   --color-accent-ink: oklch(98.5% 0.004 90);
-  --color-focus: #ff001a;
-  --color-scene-ink: #f3ede2;
+  --color-focus: #ff2b3f;
+  --color-slogan: oklch(27% 0.11 25);
+  --color-slogan-bg: oklch(15% 0.045 25);
+
+  --chrome-1: oklch(99% 0.003 250);
+  --chrome-2: oklch(86% 0.01 250);
+  --chrome-3: oklch(48% 0.014 260);
+  --chrome-4: oklch(93% 0.008 250);
+  --chrome-5: oklch(66% 0.012 255);
+
+  --flyer-red: #ff2b3f;
+  --flyer-green: #5dff3a;
+  --flyer-magenta: #ff4df5;
+  --flyer-cyan: #4de8ff;
+  --flyer-blue: #6f7dff;
+  --flyer-violet: #a97bff;
+  --flyer-orange: #ff9a2e;
+  --flyer-chrome: oklch(86% 0.01 250);
+
+  --color-scene-ink: #e9edf2;
   --color-scene-red: #ff001a;
-  --color-scene-vinyl: #1c1714;
-  --color-scene-groove: #4a413b;
-  --color-scene-env: #5a5550;
+  --color-scene-vinyl: #15161a;
+  --color-scene-groove: #3d4048;
+  --color-scene-env: #5a5c62;
 
   --font-display: var(--font-anton), "Impact", "Arial Narrow", sans-serif;
   --font-body: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-outlier: var(--font-body);
+  --font-pixel: var(--font-silkscreen), ui-monospace, monospace;
 
   --radius-card: 0;
   --radius-pill: 0;
@@ -32,12 +51,12 @@
   --display-weight: 400;
   --lh-tight: 0.88;
 
+  --text-xs: 0.8125rem;
   --text-sm: 0.875rem;
   --text-base: 1rem;
   --text-lead: clamp(1.125rem, 1rem + 0.4vw, 1.3125rem);
-  --text-title: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
+  --text-title: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
   --text-section: clamp(3rem, 1.6rem + 6vw, 7rem);
-  --text-display: clamp(4.5rem, 12vw, 13rem);
 
   --space-2xs: 0.25rem;
   --space-xs: 0.5rem;
@@ -47,7 +66,6 @@
   --space-xl: 2.5rem;
   --space-2xl: 4rem;
   --space-3xl: 6rem;
-  --space-4xl: 9rem;
 
   --gutter: clamp(1rem, 0.4rem + 2.5vw, 2.5rem);
   --container: 80rem;

@@ -1,11 +1,11 @@
-/* Hallmark · shape: Marquee Hero, kept order (Künstler, Events, Über uns) · genre: atmospheric · theme: Manifesto (deal: manual, brand red kept) · job: attend · redesign: full
- * hero: Ledge, stacked creed over a live 3D figure · nav: edge-aligned bar, wordmark and three anchors, ink bar under it · footer: mast, the wordmark over the links · imagery: none, the 3D figure carries the hero · signature: KLEIN STADT SOUND stacked at poster size, the figure turning behind it, the slogan running on the one red field
- * axes: dark, condensed caps, one red, square, hairlines · contrast: pass · fold: pass · v2.0.0 */
-/* Hallmark · pre-emit critique: P4 H5 E4 S4 R4 V4 · weakest: P, no photographs of the crew yet; DJ and event rows are set in type until real pictures arrive */
-/* Hallmark · waive 38iii · Manifesto's one red word, SOUND, placed once in the hero head */
+/* Hallmark · shape: Stage hero, then crew index, flyer archive, about · genre: atmospheric · theme: custom "Chrom & Y2K" (from the collective's Instagram flyers, brand red kept) · job: attend · redesign: full
+ * idea: "the flyer wall of a small-town collective, in chrome" · vibe: "chrome, pixel type, neon per night, red slogan wall" · hero: chrome wordmark left, the chrome figure dancing on the record town right, slogan wall behind · nav: edge-aligned bar, wordmark and three anchors · footer: mast, the wordmark over the links · imagery: the collective's own flyers (cut from screenshots, replaced later) and one crew photo · signature: the chrome figure on the record over the red "Mit Musik..." wall
+ * axes: dark, chrome, condensed caps, pixel labels, one red plus each flyer's own colour · contrast: pass · fold: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H5 E4 S5 R4 V4 · weakest: P, flyers are screenshot crops with app overlays until the originals arrive */
+/* Hallmark · waive 38iii · SOUND in brand red inside the hero head, as on the profile logo lockup */
+/* Hallmark · waive 64 · the pixel face is the flyers' own material (14.03, 05.04, 22.02, 09.05), used for dates, times and counts only */
 /* Hallmark · waive 55b · hero lines are each their own nowrap element sized in cqi, leaded at --lh-tight */
-/* Hallmark · reworded "DJ Kollektiv · Eichstätt" to "DJ-Kollektiv aus Eichstätt" · 63 names middle-dot meta */
-/* Hallmark · dropped the arrow glyphs on links and rows, the Scrollen hint, the Laden placeholder · 10 and 63 */
+/* Hallmark · answered gradient text · the chrome fill on the wordmark is the collective's chrome lettering, used on the hero head and nowhere else */
 @import "tailwindcss";
 @import "./tokens.css";
 
@@ -48,7 +48,8 @@ body {
 
 h1,
 h2,
-h3 {
+h3,
+h4 {
   font-family: var(--font-display);
   font-weight: var(--display-weight);
   text-transform: uppercase;
@@ -65,6 +66,11 @@ p {
 
 a {
   color: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
 }
 
 :focus-visible {
@@ -101,7 +107,12 @@ a {
 
 .section-head {
   font-size: var(--text-section);
-  margin-bottom: var(--space-2xl);
+  margin-bottom: var(--space-xl);
+}
+
+.pixel {
+  font-family: var(--font-pixel);
+  font-variant-numeric: tabular-nums;
 }
 
 .label {
@@ -116,7 +127,7 @@ a {
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
   color: var(--color-ink);
-  transition: color var(--dur-short) var(--ease-out), text-decoration-color var(--dur-short) var(--ease-out);
+  transition: color var(--dur-short) var(--ease-out);
 }
 
 .link:hover {
@@ -167,12 +178,6 @@ a {
   transform: translateY(1px);
 }
 
-.btn[aria-disabled="true"],
-.btn:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
-
 /* header */
 .nav {
   position: fixed;
@@ -184,7 +189,7 @@ a {
 }
 
 .nav[data-scrolled="true"] {
-  border-bottom: var(--rule-bar) solid var(--color-ink);
+  border-bottom-color: var(--color-rule);
 }
 
 .nav__inner {
@@ -241,6 +246,30 @@ a {
   padding-top: var(--nav-h);
   padding-bottom: var(--space-2xl);
   isolation: isolate;
+  overflow: clip;
+}
+
+/* The profile picture's ground: the slogan repeated in dark red. */
+.hero__wall {
+  position: absolute;
+  inset: var(--nav-h) 0 0;
+  z-index: -2;
+  background: var(--color-slogan-bg);
+  overflow: clip;
+  mask-image: linear-gradient(to bottom, var(--color-paper) 55%, transparent);
+}
+
+.hero__wall p {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 1.2rem + 2vw, 3rem);
+  line-height: 1.04;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--color-slogan);
+}
+
+.hero__wall p:nth-child(even) {
+  transform: translateX(-12%);
 }
 
 .hero__canvas {
@@ -268,6 +297,10 @@ a {
   display: block;
   white-space: nowrap;
   font-size: min(30cqi, 22svh);
+  background: linear-gradient(180deg, var(--chrome-1) 8%, var(--chrome-2) 36%, var(--chrome-3) 50%, var(--chrome-4) 62%, var(--chrome-5) 92%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
   animation: wipe var(--dur-long) var(--ease-out) both;
 }
 
@@ -275,12 +308,10 @@ a {
   animation-delay: 80ms;
 }
 
-.hero__head > span:nth-child(3) {
+.hero__head > span.hot {
+  background: none;
+  color: var(--color-accent);
   animation-delay: 160ms;
-}
-
-.hero__head .hot {
-  color: var(--color-accent-text);
 }
 
 .hero__foot {
@@ -294,9 +325,9 @@ a {
 }
 
 .hero__lede {
-  max-width: 34ch;
+  max-width: 36ch;
   font-size: var(--text-lead);
-  color: var(--color-ink-2);
+  color: var(--color-ink);
 }
 
 .hero__actions {
@@ -382,7 +413,7 @@ a {
   }
 }
 
-/* index rows: Künstler */
+/* crew index */
 .index {
   list-style: none;
   border-top: var(--rule-hair) solid var(--color-rule);
@@ -393,7 +424,7 @@ a {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--space-lg);
-  padding-block: var(--space-lg);
+  padding-block: var(--space-md);
   border-bottom: var(--rule-hair) solid var(--color-rule);
 }
 
@@ -408,57 +439,141 @@ a {
   transform: translateX(var(--space-md));
 }
 
-.index__genre {
-  font-size: var(--text-lead);
-  color: var(--color-muted);
+.index__meta {
+  display: grid;
+  justify-items: end;
+  gap: var(--space-2xs);
   text-align: right;
 }
 
-/* the record: Events */
-.record {
-  list-style: none;
-  border-top: var(--rule-bar) solid var(--color-ink);
-}
-
-.record__row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-xs) var(--space-xl);
-  padding-block: var(--space-xl);
-  border-bottom: var(--rule-hair) solid var(--color-rule);
-}
-
-.record__date {
-  font-family: var(--font-display);
-  font-size: var(--text-title);
-  line-height: 1;
-  color: var(--color-muted);
-  font-variant-numeric: tabular-nums;
-}
-
-.record__title {
-  font-size: var(--text-title);
-}
-
-.record__meta {
+.index__count {
+  font-size: var(--text-sm);
   color: var(--color-ink-2);
 }
 
-.record__type {
+.index__genre {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+
+/* flyer archive */
+.archive__year {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-md);
+  margin-block: var(--space-xl) var(--space-lg);
+  padding-top: var(--space-md);
+  border-top: var(--rule-bar) solid var(--color-ink);
+  font-family: var(--font-pixel);
+  font-size: var(--text-title);
+  text-transform: none;
+}
+
+.archive__year span {
+  font-family: var(--font-body);
   font-size: var(--text-sm);
   font-weight: 500;
   color: var(--color-muted);
 }
 
-@media (min-width: 48rem) {
-  .record__row {
-    grid-template-columns: 10rem minmax(0, 1fr) 8rem;
-    align-items: baseline;
-  }
+.archive__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  gap: var(--space-xl) var(--space-lg);
+  list-style: none;
+}
 
-  .record__type {
-    text-align: right;
-  }
+.card {
+  --accent: var(--flyer-red);
+  display: grid;
+  align-content: start;
+  gap: var(--space-sm);
+}
+
+.card[data-accent="green"] { --accent: var(--flyer-green); }
+.card[data-accent="magenta"] { --accent: var(--flyer-magenta); }
+.card[data-accent="cyan"] { --accent: var(--flyer-cyan); }
+.card[data-accent="blue"] { --accent: var(--flyer-blue); }
+.card[data-accent="violet"] { --accent: var(--flyer-violet); }
+.card[data-accent="orange"] { --accent: var(--flyer-orange); }
+.card[data-accent="chrome"] { --accent: var(--flyer-chrome); }
+
+.card__flyer {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: clip;
+  background: var(--color-paper-2);
+  outline: var(--rule-hair) solid var(--color-rule);
+  transition: outline-color var(--dur-short) var(--ease-out);
+}
+
+.card__flyer img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform var(--dur-mid) var(--ease-out);
+}
+
+.card:hover .card__flyer {
+  outline: 2px solid var(--accent);
+}
+
+.card:hover .card__flyer img {
+  transform: scale(1.03);
+}
+
+.card__date {
+  font-size: var(--text-lead);
+  color: var(--accent);
+}
+
+.card__title {
+  font-size: var(--text-title);
+}
+
+.card__place {
+  color: var(--color-ink);
+}
+
+.card__lineup,
+.card__info {
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+}
+
+.card__info {
+  color: var(--color-muted);
+}
+
+.archive__more {
+  margin-top: var(--space-2xl);
+}
+
+.archive__more > summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: var(--space-sm) var(--space-lg);
+  border: var(--rule-hair) solid var(--color-ink-2);
+  color: var(--color-ink);
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+  transition: background-color var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out);
+}
+
+.archive__more > summary::-webkit-details-marker {
+  display: none;
+}
+
+.archive__more > summary:hover {
+  background: var(--color-accent-strong);
+  border-color: var(--color-accent-strong);
+  color: var(--color-accent-ink);
+}
+
+.archive__more[open] > summary {
+  margin-bottom: var(--space-md);
 }
 
 /* about */
@@ -467,27 +582,72 @@ a {
   gap: var(--space-xl);
 }
 
-.about__statement {
-  font-family: var(--font-display);
-  font-size: clamp(2.25rem, 1.4rem + 3vw, 4.5rem);
-  line-height: 1.02;
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-display);
-  color: var(--color-ink);
-  max-width: 18ch;
+.about__photo {
+  aspect-ratio: 4 / 3;
+  overflow: clip;
+  background: var(--color-paper-2);
+}
+
+.about__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .about__body {
   display: grid;
+  align-content: start;
   gap: var(--space-lg);
   max-width: 38rem;
 }
 
+.about__statement {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 1.4rem + 2.4vw, 3.5rem);
+  line-height: 1.02;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-display);
+  color: var(--color-ink);
+}
+
+.facts {
+  display: grid;
+  gap: var(--space-xl);
+  margin-top: var(--space-2xl);
+}
+
+.facts h3 {
+  font-size: var(--text-title);
+  margin-bottom: var(--space-sm);
+}
+
+.facts ul {
+  list-style: none;
+  border-top: var(--rule-hair) solid var(--color-rule);
+}
+
+.facts li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding-block: var(--space-sm);
+  border-bottom: var(--rule-hair) solid var(--color-rule);
+  color: var(--color-ink);
+}
+
+.facts li span {
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+}
+
 @media (min-width: 64rem) {
   .about {
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    align-items: end;
-    gap: var(--space-xl);
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: var(--space-2xl);
+  }
+
+  .facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -568,7 +728,8 @@ a {
     white-space: normal;
   }
 
-  .index__row:hover .index__name {
+  .index__row:hover .index__name,
+  .card:hover .card__flyer img {
     transform: none;
   }
 }

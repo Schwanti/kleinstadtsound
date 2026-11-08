@@ -7,9 +7,16 @@ const Scene = dynamic(() => import('@/components/3d/Scene'), {
   loading: () => null,
 })
 
+const SLOGAN = 'Mit Musik können Menschen nicht unsympathisch sein'
+
 export default function Hero() {
   return (
     <section id="home" className="hero" aria-labelledby="hero-title">
+      <div className="hero__wall" aria-hidden="true">
+        {Array.from({ length: 14 }, (_, i) => (
+          <p key={i}>{SLOGAN} {SLOGAN}</p>
+        ))}
+      </div>
       <div className="hero__canvas" aria-hidden="true">
         <Scene />
       </div>
@@ -23,11 +30,11 @@ export default function Hero() {
 
         <div className="hero__foot">
           <p className="hero__lede">
-            DJ-Kollektiv aus Eichstätt. Elektronische Musik, von Italo Disco bis Breakbeat.
+            DJ-Kollektiv aus Eichstätt. House, Breakbeat, Elektro und UK Garage, meistens in der Kellerbar.
           </p>
           <div className="hero__actions">
             <a className="btn btn--primary" href="#events">
-              Zu den Events
+              Zum Event-Archiv
             </a>
             <a
               className="btn btn--secondary"

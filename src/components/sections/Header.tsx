@@ -24,7 +24,7 @@ export default function Header() {
 
         <ul className="nav__links">
           <li>
-            <a href="#djs">Künstler</a>
+            <a href="#djs">Crew</a>
           </li>
           <li>
             <a href="#events">Events</a>
