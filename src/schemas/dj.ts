@@ -22,6 +22,13 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'aliases',
+      title: 'Other spellings on flyers',
+      description: 'Used to count gigs in the event line-ups, e.g. "DJ Soulstice".',
+      type: 'array',
+      of: [{ type: 'string' }],
+    }),
+    defineField({
       name: 'photo',
       title: 'Photo',
       type: 'image',

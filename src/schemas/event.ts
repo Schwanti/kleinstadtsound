@@ -42,6 +42,12 @@ export default defineType({
       of: [{ type: 'string' }],
     }),
     defineField({
+      name: 'partners',
+      title: 'Partner collectives and venues',
+      type: 'array',
+      of: [{ type: 'string' }],
+    }),
+    defineField({
       name: 'accent',
       title: 'Flyer colour',
       type: 'string',

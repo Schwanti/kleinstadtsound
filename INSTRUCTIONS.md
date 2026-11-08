@@ -64,6 +64,7 @@ Requirements:
 - **Events:** `src/content/events.ts`, transcribed from the Instagram flyers. One entry per night: date, title, venue, city, line-up, info, partners, flyer image, flyer colour (`accent`).
 - **Flyers:** `public/flyer/`. The current files are cut from phone screenshots; replace each with the original artwork under the same file name.
 - **Sanity:** when `NEXT_PUBLIC_SANITY_PROJECT_ID` is set, crew ("DJ Profile") and events come from the Studio instead of these files; the page refreshes every 5 minutes.
+- **Moving the local data into Sanity:** add `SANITY_API_WRITE_TOKEN` (Editor rights, from sanity.io/manage > API > Tokens) to `.env.local`, then run `npm run sanity:import -- --dry-run` to check and `npm run sanity:import` to write. It uploads the flyers, can be run again safely, and lists Studio entries it did not create (e.g. tests) so you can delete them.
 - "Wo wir spielen", "Mit wem" and the "x× im Line-up" counts are computed from the event list.
 
 ## Content Structure

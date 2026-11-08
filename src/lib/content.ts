@@ -9,6 +9,7 @@ const ACCENTS: FlyerAccent[] = ['red', 'green', 'magenta', 'cyan', 'blue', 'viol
 
 type SanityDJ = {
   name: string
+  aliases?: string[]
   genres?: string[]
   socialLinks?: { instagram?: string; soundcloud?: string }
   soundcloudUrl?: string
@@ -22,6 +23,7 @@ type SanityEvent = {
   location?: string
   description?: string
   lineup?: string[]
+  partners?: string[]
   accent?: string
   image?: unknown
 }
@@ -30,10 +32,11 @@ export async function getCrew(): Promise<CrewMember[]> {
   if (!sanityConfigured) return localCrew
   try {
     const { client } = await import('./sanity')
-    const docs = await client.fetch<SanityDJ[]>(`*[_type == "dj"] | order(name asc){name, genres, socialLinks, soundcloudUrl}`)
+    const docs = await client.fetch<SanityDJ[]>(`*[_type == "dj"] | order(name asc){name, aliases, genres, socialLinks, soundcloudUrl}`)
     if (!docs?.length) return localCrew
     return docs.map((d) => ({
       name: d.name,
+      aliases: d.aliases,
       genres: d.genres,
       instagram: d.socialLinks?.instagram,
       soundcloud: d.soundcloudUrl ?? d.socialLinks?.soundcloud,
@@ -57,6 +60,7 @@ export async function getEvents(): Promise<ArchiveEvent[]> {
           venue: d.location,
           lineup: d.lineup ?? [],
           info: d.description,
+          partners: d.partners?.length ? d.partners : undefined,
           type: d.type,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           flyer: d.image ? urlFor(d.image as any).width(1000).url() : undefined,
