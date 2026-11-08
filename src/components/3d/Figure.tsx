@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import { MarchingCubes } from 'three-stdlib'
 
 type FigureProps = {
   ink: string
@@ -12,28 +13,6 @@ type FigureProps = {
 }
 
 const BPM = 124
-
-// A tube whose radius tapers from `from` at the root to `to` at the tip.
-function taperedTube(points: [number, number, number][], from: number, to: number) {
-  const curve = new THREE.CatmullRomCurve3(points.map((p) => new THREE.Vector3(...p)))
-  const tubular = 48
-  const radial = 20
-  const geo = new THREE.TubeGeometry(curve, tubular, 1, radial, false)
-  const pos = geo.attributes.position
-  const v = new THREE.Vector3()
-  for (let j = 0; j <= tubular; j++) {
-    const t = j / tubular
-    const center = curve.getPointAt(t)
-    const r = THREE.MathUtils.lerp(from, to, Math.pow(t, 0.8))
-    for (let k = 0; k <= radial; k++) {
-      const i = j * (radial + 1) + k
-      v.fromBufferAttribute(pos, i).sub(center).multiplyScalar(r).add(center)
-      pos.setXYZ(i, v.x, v.y, v.z)
-    }
-  }
-  geo.computeVertexNormals()
-  return { geo, tip: curve.getPointAt(1), tipRadius: to }
-}
 
 function drawFace(font: string) {
   const canvas = document.createElement('canvas')
@@ -92,33 +71,145 @@ type Limb = {
   to: number
   swing: number
   phase: number
+  spike?: boolean
 }
 
 // Proportions measured from the collective's artwork: a sphere head on a dark collar,
-// a short torso, two long arms that spike down and out, two long legs in an uneven stride.
+// a short torso with a wide yoke, two long arms that spike down and out,
+// two long legs in an uneven stride. The body is one liquid chrome surface.
 const HEAD_Y = 2.89
 const HEAD_R = 0.42
-const SHOULDER: Point = [0, 2.3, 0]
-const CROTCH: Point = [-0.04, 1.62, 0]
+const TORSO: Limb = { points: [[0, 2.55, 0], [0, 2.32, 0.02], [-0.02, 1.95, 0.02], [-0.04, 1.62, 0]], from: 0.27, to: 0.22, swing: 0, phase: 0 }
 const LIMBS: Limb[] = [
-  // left arm
-  { points: [[-0.1, 2.34, 0], [-0.45, 2.2, 0.05], [-0.85, 1.95, 0.1], [-1.25, 1.68, 0.14]], from: 0.22, to: 0.022, swing: 0.16, phase: 0 },
-  // right arm
-  { points: [[0.12, 2.36, 0], [0.52, 2.22, 0.05], [0.97, 1.9, 0.1], [1.34, 1.46, 0.14]], from: 0.22, to: 0.022, swing: 0.16, phase: Math.PI },
-  // left leg, rooted high on the hip
-  { points: [[-0.18, 1.98, 0], [-0.5, 1.45, 0.03], [-0.72, 0.75, 0.06], [-0.98, 0.02, 0.1]], from: 0.21, to: 0.06, swing: 0.03, phase: Math.PI / 2 },
-  // right leg, from the crotch
-  { points: [[0.0, 1.66, 0], [0.2, 1.1, 0.03], [0.36, 0.55, 0.05], [0.5, 0.02, 0.08]], from: 0.21, to: 0.06, swing: 0.03, phase: -Math.PI / 2 },
+  // arms
+  { points: [[-0.12, 2.34, 0], [-0.5, 2.2, 0.05], [-0.88, 1.95, 0.1], [-1.25, 1.66, 0.14]], from: 0.23, to: 0.06, swing: 0.16, phase: 0, spike: true },
+  { points: [[0.14, 2.36, 0], [0.55, 2.22, 0.05], [0.98, 1.9, 0.1], [1.34, 1.46, 0.14]], from: 0.23, to: 0.06, swing: 0.16, phase: Math.PI, spike: true },
+  // legs: the left rooted high on the hip, the right from the crotch
+  { points: [[-0.16, 1.98, 0], [-0.48, 1.45, 0.03], [-0.72, 0.75, 0.06], [-0.98, 0.08, 0.1]], from: 0.21, to: 0.095, swing: 0.03, phase: Math.PI / 2 },
+  { points: [[0.0, 1.66, 0], [0.2, 1.1, 0.03], [0.36, 0.55, 0.05], [0.5, 0.08, 0.08]], from: 0.21, to: 0.095, swing: 0.03, phase: -Math.PI / 2 },
 ]
+
+// The metaball volume: a cube of 2 * HALF world units around CENTER.
+const CENTER = new THREE.Vector3(0, 1.45, 0.05)
+const HALF = 1.6
+const ISOLATION = 80
+const SUBTRACT = 12
+// Calibrated so a chain of balls spaced at STEP renders close to the given radius.
+const STEP = 0.055
+const DENSITY = 0.3
+
+type Sample = { p: THREE.Vector3; r: number; phase: number }
+
+function sampleLimb(limb: Limb): Sample[] {
+  const curve = new THREE.CatmullRomCurve3(limb.points.map((p) => new THREE.Vector3(...p)))
+  const count = Math.max(2, Math.ceil(curve.getLength() / STEP))
+  return Array.from({ length: count + 1 }, (_, i) => {
+    const t = i / count
+    return { p: curve.getPointAt(t), r: THREE.MathUtils.lerp(limb.from, limb.to, Math.pow(t, 0.7)), phase: t * 6 }
+  })
+}
+
+function tipFrame(limb: Limb) {
+  const curve = new THREE.CatmullRomCurve3(limb.points.map((p) => new THREE.Vector3(...p)))
+  return { tip: curve.getPointAt(1), dir: curve.getTangentAt(1).normalize() }
+}
+
+const UP = new THREE.Vector3(0, 1, 0)
 
 export default function Figure({ ink, collar, font, still = false }: FigureProps) {
   const body = useRef<THREE.Group>(null)
   const head = useRef<THREE.Group>(null)
-  const limbRefs = useRef<(THREE.Group | null)[]>([])
+  const spikeRefs = useRef<(THREE.Mesh | null)[]>([])
   const face = useFaceTexture(font)
 
-  const limbs = useMemo(() => LIMBS.map((l) => taperedTube(l.points, l.from, l.to)), [])
-  const torso = useMemo(() => taperedTube([[0, 2.55, 0], SHOULDER, [-0.02, 1.95, 0], CROTCH], 0.27, 0.2), [])
+  const torso = useMemo(() => sampleLimb(TORSO), [])
+  const limbs = useMemo(() => LIMBS.map(sampleLimb), [])
+  const tips = useMemo(() => LIMBS.map(tipFrame), [])
+
+  const chrome = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: ink, metalness: 0.92, roughness: 0.15, envMapIntensity: 1.8 }),
+    [ink],
+  )
+
+  // Lower resolution on small screens keeps the per-frame rebuild cheap.
+  const liquid = useMemo(() => {
+    const resolution = typeof window !== 'undefined' && window.innerWidth < 640 ? 48 : 76
+    const mc = new MarchingCubes(resolution, chrome, false, false, 90000)
+    mc.isolation = ISOLATION
+    mc.position.copy(CENTER)
+    mc.scale.setScalar(HALF)
+    return mc
+  }, [chrome])
+
+  useEffect(() => () => liquid.geometry.dispose(), [liquid])
+
+  // Rebuilds the liquid body for the given pose.
+  const pose = useMemo(() => {
+    const tmp = new THREE.Vector3()
+    const axis = new THREE.Vector3(0, 0, 1)
+    const add = (p: THREE.Vector3, r: number) => {
+      const rn = r / (2 * HALF)
+      liquid.addBall(
+        (p.x - CENTER.x) / (2 * HALF) + 0.5,
+        (p.y - CENTER.y) / (2 * HALF) + 0.5,
+        (p.z - CENTER.z) / (2 * HALF) + 0.5,
+        DENSITY * rn * rn * (ISOLATION + SUBTRACT),
+        SUBTRACT,
+      )
+    }
+    return (time: number, beat: number) => {
+      liquid.reset()
+      for (const s of torso) add(s.p, s.r * (1 + 0.03 * Math.sin(time * 2.4 + s.phase)))
+      LIMBS.forEach((limb, i) => {
+        const angle = Math.sin(beat * Math.PI + limb.phase) * limb.swing
+        const root = limbs[i][0].p
+        for (const s of limbs[i]) {
+          tmp.copy(s.p).sub(root).applyAxisAngle(axis, angle).add(root)
+          add(tmp, s.r * (1 + 0.04 * Math.sin(time * 3 + s.phase + i)))
+        }
+        const spike = spikeRefs.current[i]
+        if (spike) {
+          const { tip, dir } = tips[i]
+          spike.position.copy(tip).sub(root).applyAxisAngle(axis, angle).add(root)
+          spike.quaternion.setFromUnitVectors(UP, tmp.copy(dir).applyAxisAngle(axis, angle))
+          spike.translateY(0.15 - 0.04)
+        }
+      })
+      liquid.update()
+    }
+  }, [liquid, torso, limbs, tips])
+
+  // Build the resting pose once, so the figure also stands when motion is reduced.
+  useEffect(() => {
+    pose(0, 0.5)
+  }, [pose])
+
+  // The liquid is rebuilt at 30 fps; the transforms below still run every frame.
+  const sinceRebuild = useRef(1)
+
+  useFrame((state, delta) => {
+    if (still || !body.current || !head.current) return
+    const dt = Math.min(delta, 0.05)
+    const beat = (state.clock.elapsedTime * BPM) / 60
+    const kick = Math.pow(1 - (beat % 1), 3)
+    const sway = Math.sin(beat * Math.PI)
+
+    sinceRebuild.current += delta
+    if (sinceRebuild.current >= 1 / 30) {
+      sinceRebuild.current = 0
+      pose(state.clock.elapsedTime, beat)
+    }
+
+    // Bounce on the kick, sway on the bar, turn with the scroll.
+    body.current.position.y = kick * 0.08
+    body.current.rotation.z = sway * 0.04
+    const scrollTurn = window.scrollY * 0.003
+    body.current.rotation.y = THREE.MathUtils.damp(body.current.rotation.y, state.pointer.x * 0.35 + Math.sin(scrollTurn) * 0.6, 3, dt)
+
+    // The head follows the pointer.
+    head.current.rotation.y = THREE.MathUtils.damp(head.current.rotation.y, state.pointer.x * 0.5, 5, dt)
+    head.current.rotation.x = THREE.MathUtils.damp(head.current.rotation.x, -state.pointer.y * 0.3, 5, dt)
+  })
 
   // A disc bent onto the head so the logo sits on the sphere, planar UVs kept.
   const faceGeo = useMemo(() => {
@@ -137,61 +228,20 @@ export default function Figure({ ink, collar, font, still = false }: FigureProps
     return ring
   }, [])
 
-  const chrome = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: ink, metalness: 0.92, roughness: 0.15, envMapIntensity: 1.8 }),
-    [ink],
-  )
-
-  useFrame((state, delta) => {
-    if (still || !body.current || !head.current) return
-    const dt = Math.min(delta, 0.05)
-    const beat = (state.clock.elapsedTime * BPM) / 60
-    const kick = Math.pow(1 - (beat % 1), 3)
-    const sway = Math.sin(beat * Math.PI)
-
-    // Bounce on the kick, sway on the bar, turn with the scroll.
-    body.current.position.y = kick * 0.08
-    body.current.rotation.z = sway * 0.04
-    const scrollTurn = window.scrollY * 0.003
-    body.current.rotation.y = THREE.MathUtils.damp(body.current.rotation.y, state.pointer.x * 0.35 + Math.sin(scrollTurn) * 0.6, 3, dt)
-
-    // The head follows the pointer.
-    head.current.rotation.y = THREE.MathUtils.damp(head.current.rotation.y, state.pointer.x * 0.5, 5, dt)
-    head.current.rotation.x = THREE.MathUtils.damp(head.current.rotation.x, -state.pointer.y * 0.3, 5, dt)
-
-    limbRefs.current.forEach((g, i) => {
-      if (!g) return
-      const l = LIMBS[i]
-      g.rotation.z = Math.sin(beat * Math.PI + l.phase) * l.swing
-    })
-  })
-
   return (
     <group ref={body} scale={1.08}>
-      <mesh geometry={torso.geo} material={chrome} />
-      <mesh position={SHOULDER} scale={[1.45, 0.85, 1]} material={chrome}>
-        <sphereGeometry args={[0.27, 32, 32]} />
-      </mesh>
-      <mesh position={CROTCH} material={chrome}>
-        <sphereGeometry args={[0.2, 32, 32]} />
-      </mesh>
+      <primitive object={liquid} />
 
-      {limbs.map((limb, i) => {
-        const root = LIMBS[i].points[0]
-        return (
-          <group key={i} position={root} ref={(el) => { limbRefs.current[i] = el }}>
-            <group position={[-root[0], -root[1], -root[2]]}>
-              <mesh geometry={limb.geo} material={chrome} />
-              <mesh position={limb.tip} material={chrome}>
-                <sphereGeometry args={[limb.tipRadius, 16, 16]} />
-              </mesh>
-            </group>
-          </group>
-        )
-      })}
+      {LIMBS.map((limb, i) =>
+        limb.spike ? (
+          <mesh key={i} ref={(el) => { spikeRefs.current[i] = el }} material={chrome}>
+            <coneGeometry args={[0.036, 0.3, 24]} />
+          </mesh>
+        ) : null,
+      )}
 
-      <mesh position={[0, 2.5, 0]} rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[0.23, 0.045, 16, 48]} />
+      <mesh position={[0, 2.52, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[0.24, 0.045, 16, 48]} />
         <meshStandardMaterial color={collar} metalness={0.5} roughness={0.4} />
       </mesh>
 
