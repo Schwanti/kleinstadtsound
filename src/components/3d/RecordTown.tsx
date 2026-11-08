@@ -25,8 +25,6 @@ export type SceneColors = {
   fossil: string
   feather: string
   bone: string
-  tape: string
-  tapeDark: string
   font: string
 }
 

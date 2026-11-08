@@ -20,14 +20,6 @@ export default function About({ events }: AboutProps) {
 
   return (
     <section id="about" className="section" aria-labelledby="about-title">
-      {/* Easter egg: taped over the passage, as it hangs in real life. Words from the song. */}
-      <p className="tape-banner" aria-label="A Mensch möcht i bleim">
-        {['A', 'Mensch', 'möcht', 'i', 'bleim'].map((word) => (
-          <span key={word} aria-hidden="true">
-            {word}
-          </span>
-        ))}
-      </p>
       <div className="wrap">
         <h2 id="about-title" className="section-head">
           Über uns
