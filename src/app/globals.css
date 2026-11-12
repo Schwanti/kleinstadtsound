@@ -838,9 +838,38 @@ img {
     font-size: 1.0625rem;
   }
 
+  /* Phones: the scene stands above the headline instead of behind it,
+     so the white figure never sits on the white chrome letters. */
+  .hero {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-end;
+    padding-bottom: var(--space-lg);
+  }
+
   .hero__canvas {
-    inset: var(--nav-h) 0 38% 0;
-    opacity: 0.55;
+    position: relative;
+    inset: auto;
+    flex: none;
+    height: 40svh;
+    margin-bottom: var(--space-xs);
+  }
+
+  .hero__inner {
+    gap: var(--space-md);
+  }
+
+  .hero__foot {
+    gap: var(--space-md);
+    padding-top: var(--space-md);
+  }
+
+  .hero__lede {
+    font-size: var(--text-base);
+  }
+
+  .hero__head > span {
+    font-size: min(22cqi, 9svh);
   }
 }
 
