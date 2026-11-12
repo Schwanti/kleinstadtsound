@@ -23,7 +23,6 @@ export type SceneColors = {
   river: string
   neon: string
   fossil: string
-  feather: string
   bone: string
   font: string
 }

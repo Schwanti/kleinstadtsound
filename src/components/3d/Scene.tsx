@@ -6,7 +6,6 @@ import * as THREE from 'three'
 import { Environment, Lightformer } from '@react-three/drei'
 import RecordTown from './RecordTown'
 import Figure from './Figure'
-import Archaeopteryx from './Archaeopteryx'
 const CAMERA_HOME = new THREE.Vector3(0, 2.7, 7.6)
 const CAMERA_TARGET = new THREE.Vector3(0, 1.35, 0)
 import { sceneState } from './sceneState'
@@ -64,7 +63,6 @@ export default function Scene() {
     river: readToken('--color-scene-river', 'blue'),
     neon: readToken('--color-scene-neon', 'red'),
     fossil: readToken('--color-scene-fossil', 'beige'),
-    feather: readToken('--color-scene-feather', 'tan'),
     bone: readToken('--color-scene-bone', 'brown'),
   }))
 
@@ -93,7 +91,6 @@ export default function Scene() {
       </Environment>
 
       <RecordTown colors={colors} still={still} />
-      <Archaeopteryx color={colors.feather} teeth={colors.fossil} still={still} />
       {!still && <Strobe />}
       <Figure ink={colors.ink} collar={colors.vinyl} font={colors.font} still={still} />
     </Canvas>
