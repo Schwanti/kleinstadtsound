@@ -6,8 +6,8 @@ import * as THREE from 'three'
 import { Environment, Lightformer } from '@react-three/drei'
 import RecordTown from './RecordTown'
 import Figure from './Figure'
-const CAMERA_HOME = new THREE.Vector3(0, 2.7, 7.6)
-const CAMERA_TARGET = new THREE.Vector3(0, 1.35, 0)
+const CAMERA_HOME = new THREE.Vector3(0, 2.6, 8.1)
+const CAMERA_TARGET = new THREE.Vector3(0, 1.2, 0)
 import { sceneState } from './sceneState'
 
 const BPM = 124
