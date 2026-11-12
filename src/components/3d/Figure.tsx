@@ -215,7 +215,7 @@ export default function Figure({ ink, collar, font, still = false }: FigureProps
     const scrollTurn = window.scrollY * 0.003
     spin.current = sceneState.party ? spin.current + dt * 3 : THREE.MathUtils.damp(spin.current, 0, 2, dt)
     body.current.rotation.y =
-      THREE.MathUtils.damp(base.current, state.pointer.x * 0.35 + Math.sin(scrollTurn) * 0.6, 3, dt) + twirl + spin.current
+      THREE.MathUtils.damp(base.current, Math.sin(scrollTurn) * 0.6, 3, dt) + twirl + spin.current
     base.current = body.current.rotation.y - twirl - spin.current
 
     // Arms swing from the shoulder, in opposite phase; up high while jumping.
@@ -224,10 +224,6 @@ export default function Figure({ ink, collar, font, still = false }: FigureProps
       const lift = jumping ? Math.sin(j * Math.PI) * 0.5 * (i === 0 ? -1 : 1) : 0
       g.rotation.z = Math.sin(beat * Math.PI + ARMS[i].phase) * ARM_SWING * groove + lift
     })
-
-    // The head follows the pointer.
-    head.current.rotation.y = THREE.MathUtils.damp(head.current.rotation.y, state.pointer.x * 0.5, 5, dt)
-    head.current.rotation.x = THREE.MathUtils.damp(head.current.rotation.x, -state.pointer.y * 0.3, 5, dt)
   })
 
   // A disc bent onto the head so the logo sits on the sphere, planar UVs kept.

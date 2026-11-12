@@ -661,10 +661,6 @@ export default function RecordTown({ colors, still = false, children }: RecordTo
     s.last = y
     platter.current.rotation.y -= (BASE_SPIN + s.velocity * 6) * dt
 
-    // Pointer tilts the deck.
-    deck.current.rotation.x = THREE.MathUtils.damp(deck.current.rotation.x, DECK_TILT - state.pointer.y * 0.18, 4, dt)
-    deck.current.rotation.z = THREE.MathUtils.damp(deck.current.rotation.z, -state.pointer.x * 0.18, 4, dt)
-
     // Houses pump like an equalizer while the needle is down; party mode paints the windows.
     const beat = (t * BPM) / 60
     const kick = Math.pow(1 - (beat % 1), 3)
