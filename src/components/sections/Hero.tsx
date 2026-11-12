@@ -12,8 +12,9 @@ const SLOGAN = 'Mit Musik können Menschen nicht unsympathisch sein'
 export default function Hero() {
   return (
     <section id="home" className="hero" aria-labelledby="hero-title">
+      {/* More lines than any screen needs; the wall clips the rest. */}
       <div className="hero__wall" aria-hidden="true">
-        {Array.from({ length: 14 }, (_, i) => (
+        {Array.from({ length: 40 }, (_, i) => (
           <p key={i}>{SLOGAN} {SLOGAN}</p>
         ))}
       </div>
